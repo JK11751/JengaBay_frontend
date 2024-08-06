@@ -91,6 +91,8 @@ const Routes =()=>{
 
             {/* Private Routes */}
             <PrivateRoute component={AddProduct} exact path="/products/:SellerId/addproduct" />
+            <PrivateRoute component={CompanyProductPage} exact path="/sellers/:sellerId/:sellerName"/>
+            <PrivateRoute component={CompanyProfilePage} exact path="/seller/:sellerId/profile"/>
             <PrivateRoute component={CompanyOrders} exact path="/orders" />
             <PrivateRoute component={ClientOrders} exact path="/client/orders" />
             <PrivateRoute component={OrderDetails} exact path="/orders/order-details/:orderId" />

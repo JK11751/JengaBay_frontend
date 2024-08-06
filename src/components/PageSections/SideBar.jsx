@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef } from "react";
 import logo from "../../assets/JengaBay.png";
 import { Box, HStack, VStack, Flex, Text } from "@chakra-ui/layout";
@@ -29,11 +30,11 @@ import { LogoutDialogue } from "../LogoutDialogue";
 import { useDisclosure } from "@chakra-ui/hooks";
 
 const LinkItems = [
-  { name: "Home", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
-  { name: "Explore", icon: FiCompass },
-  { name: "Favourites", icon: FiStar },
-  { name: "Settings", icon: FiSettings },
+  { name: "Home", icon: FiHome, url: "/" },
+  { name: "Trending", icon: FiTrendingUp, url: "/trending" },
+  { name: "Explore", icon: FiCompass, url: "/explore" },
+  { name: "Favourites", icon: FiStar, url: "/favourites" },
+  { name: "Settings", icon: FiSettings, url: "/seller/1/profile" },
 ];
 
 const SidebarContent = ({ onClose, handleToggle, ref, onOpen, ...rest }) => {
@@ -98,7 +99,11 @@ const SidebarContent = ({ onClose, handleToggle, ref, onOpen, ...rest }) => {
         </AccordionItem>
       </Accordion>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem
+          key={link.name}
+          icon={link.icon}
+          onClick={() => history.push(link.url)}
+        >
           {link.name}
         </NavItem>
       ))}
