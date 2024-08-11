@@ -62,7 +62,7 @@ const SignUpForm = () => {
             toast.success("Sign up successful", {
                 position: "bottom-left",
             });
-            history.push("/orders");
+            history.push("/login");
         }
     });
 

@@ -13,7 +13,7 @@ import { handleGetSellerDetails } from '../../redux/appActions/sellerActions';
 export const CompanyOrders = () => {
     const dispatch = useDispatch();
     const user = getUser();
-    const userId = user ? user.user_id : null;
+    const userId = user ? user.account_id : null;
 
     const orderReducer = useSelector(({ orderReducer }) => orderReducer);
     const sellerReducer = useSelector(({ sellerReducer }) => sellerReducer);

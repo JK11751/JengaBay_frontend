@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect } from "react"
 import { Box, Flex, Center, Spacer, Text, Icon, HStack, Spinner,SimpleGrid } from "@chakra-ui/react";
 import {ChevronRightIcon} from "@chakra-ui/icons"

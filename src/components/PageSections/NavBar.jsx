@@ -1,6 +1,6 @@
 import React from "react";
 import CartIcon from "../Products/cartIcon";
-import { FiMenu, FiHelpCircle } from "react-icons/fi"
+import { FiMenu, FiHelpCircle } from "react-icons/fi";
 import icon from "../../assets/JengaBay.png";
 import { Image } from "@chakra-ui/image";
 import { IoIosArrowDown } from "react-icons/io";
@@ -19,39 +19,38 @@ import {
   VStack,
   IconButton,
   CloseButton,
-//   Avatar,
   Center,
 } from "@chakra-ui/react";
 import {
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuGroup,
-    MenuDivider,
-  } from "@chakra-ui/react"
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuGroup,
+  MenuDivider,
+} from "@chakra-ui/react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useHistory } from "react-router";
 import SearchBar from "../SearchBar/SearchBar";
 import { useSelector } from "react-redux";
 import { LogoutDialogue } from "../LogoutDialogue";
 import { useDisclosure } from "@chakra-ui/hooks";
-// import { useLocation } from "react-router";
+import { getUser } from "../../utils/useToken";
 
 const NavBar = () => {
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();
-  const history= useHistory()
-  const [show, setShow] = React.useState(false)
-  const handleToggle = (setting) => setShow(setting)
+  const sellerId = getUser()?.account_id;
+  const history = useHistory();
+  const [show, setShow] = React.useState(false);
+  const handleToggle = (setting) => setShow(setting);
   const cart = useSelector(({ cartReducer }) => cartReducer);
-  const {isOpen, onOpen, onClose} = useDisclosure()
-  // const location = useLocation()
-  // const value = location.state.from
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const user = getUser();
 
   const handleOpenCart = () => {
-    history.push("/cart")
-  }
+    history.push("/cart");
+  };
 
   return (
     <React.Fragment>
@@ -65,7 +64,7 @@ const NavBar = () => {
         zIndex="200"
         position="sticky"
       >
-        <Flex alignItems="center" justifyContent="space-between" >
+        <Flex alignItems="center" justifyContent="space-between">
           <HStack display="flex" spacing={3} alignItems="center">
             <Box display={{ base: "inline-flex", md: "none" }}>
               <IconButton
@@ -100,28 +99,26 @@ const NavBar = () => {
               </VStack>
             </Box>
 
-              <Icon
-                  onClick={() => handleToggle(true)}
-                  color="#fff"
-                  _hover={{cursor:"pointer"}}
-                  as={FiMenu}
-                  h={10}
-                  w={7}
-                  // mr={6}
-                  // mb={1}
-              />
-              <VisuallyHidden>Menu</VisuallyHidden>
+            <Icon
+              onClick={() => handleToggle(true)}
+              color="#fff"
+              _hover={{ cursor: "pointer" }}
+              as={FiMenu}
+              h={10}
+              w={7}
+            />
+            <VisuallyHidden>Menu</VisuallyHidden>
 
-            <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>    
+            <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
               <Flex w="full" alignSelf="center" flexShrink={0}>
-                  <Link to="/">
-                      <Image src={icon} />
-                  </Link>
+                <Link to="/">
+                  <Image src={icon} />
+                </Link>
               </Flex>
             </HStack>
           </HStack>
           <Center>
-            <SearchBar/>
+            <SearchBar />
           </Center>
           <HStack
             spacing={3}
@@ -129,7 +126,6 @@ const NavBar = () => {
             alignItems="center"
             pr={4}
           >
-
             <chakra.a
               pl={3}
               color={useColorModeValue("gray.800", "inherit")}
@@ -145,74 +141,82 @@ const NavBar = () => {
               rounded="sm"
               _hover={{ color: useColorModeValue("gray.800", "gray.600") }}
             >
-              <CartIcon handleOpenCart={() => handleOpenCart()} number={cart.cartItems.length}
-               />
+              <CartIcon
+                handleOpenCart={() => handleOpenCart()}
+                number={cart.cartItems.length}
+              />
               <VisuallyHidden>Shopping Cart</VisuallyHidden>
             </chakra.a>
             <Menu isLazy>
-            <MenuButton p={0} bg="transparent">
-              <Icon
-                color="#fff"
-                h={7}
-                w={7}
-                as={MdOutlineAccountCircle}
-              />
-              <Icon color="#fff" h={5} w={4} as={IoIosArrowDown} />
-            </MenuButton>
-            <MenuList>
-              <MenuGroup title="Profile">
-                <MenuItem>My Account</MenuItem>
-                <MenuItem>Edit Profile</MenuItem>
-              </MenuGroup>
-              <MenuDivider />
-              <MenuGroup title="Help">
-                <MenuItem>Docs</MenuItem>
-                <MenuItem>FAQ</MenuItem>
-              </MenuGroup>
-              <MenuItem alignItems="center">
-                  <Button
-                    h="30px"
-                    alignItems="center"
-                    fontWeight="500"
-                    fontSize="13px"
-                    w="130px"
-                    textColor="#18A0FB"
-                    background="#fff"
-                    variant="outline"
-                    onClick={()=>history.push({pathname:"/signup"
-                    // , state:{from: location.pathname}
-                    })}
+              <MenuButton p={0} bg="transparent">
+                <Icon color="#fff" h={7} w={7} as={MdOutlineAccountCircle} />
+                <Icon color="#fff" h={5} w={4} as={IoIosArrowDown} />
+              </MenuButton>
+              <MenuList>
+                <MenuGroup fontWeight="bold" title="Profile">
+                  <MenuItem
+                    onClick={() =>
+                      history.push({ pathname: `/sellers/${sellerId}/profile` })
+                    }
                   >
-                    Sign Up
-                  </Button>
-              </MenuItem>
-                <MenuItem alignItems="center">
-                    <Button
-                      h="30px"
-                      w="130px"
-                      alignItems="center"
-                      fontWeight="500"
-                      fontSize="13px"
-                      textColor="#000"
-                      colorScheme="#18A0FB"
-                      background="#18A0FB"
-                      variant="solid"
-                      onClick={()=>history.push({pathname:"/login"
-                      // , state:{from: location.pathname}
-                      })}
-                    >
-                      Login
-                    </Button>
-                </MenuItem>
-              <MenuDivider />
-              <MenuItem onClick={() => onOpen()}>LOG OUT</MenuItem>
-            </MenuList>
-          </Menu>
-            {/* <Avatar
-              size="sm"
-              name="Dan Abrahmov"
-              src="https://bit.ly/dan-abramov"
-            /> */}
+                    My Account
+                  </MenuItem>
+                </MenuGroup>
+                <MenuDivider />
+                <MenuGroup title="Help">
+                  <MenuItem>Docs</MenuItem>
+                  <MenuItem>FAQ</MenuItem>
+                </MenuGroup>
+                {!user ? (
+                  <>
+                    <MenuItem alignItems="center">
+                      <Button
+                        h="30px"
+                        alignItems="center"
+                        fontWeight="500"
+                        fontSize="13px"
+                        w="130px"
+                        textColor="#18A0FB"
+                        background="#fff"
+                        variant="outline"
+                        onClick={() =>
+                          history.push({
+                            pathname: "/signup",
+                          })
+                        }
+                      >
+                        Sign Up
+                      </Button>
+                    </MenuItem>
+                    <MenuItem alignItems="center">
+                      <Button
+                        h="30px"
+                        w="130px"
+                        alignItems="center"
+                        fontWeight="500"
+                        fontSize="13px"
+                        textColor="#000"
+                        colorScheme="#18A0FB"
+                        background="#18A0FB"
+                        variant="solid"
+                        onClick={() =>
+                          history.push({
+                            pathname: "/login",
+                          })
+                        }
+                      >
+                        Login
+                      </Button>
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuDivider />
+                    <MenuItem onClick={() => onOpen()}>LOG OUT</MenuItem>
+                  </>
+                )}
+              </MenuList>
+            </Menu>
           </HStack>
         </Flex>
       </chakra.header>
@@ -220,6 +224,6 @@ const NavBar = () => {
       <LogoutDialogue isOpen={isOpen} onClose={onClose} />
     </React.Fragment>
   );
-}
+};
 
 export default NavBar;

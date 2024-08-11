@@ -16,7 +16,7 @@ import {
   Button,
   IconButton,
   FormControl,
-  Image
+  Image,
 } from "@chakra-ui/react";
 import { toast } from "react-toastify";
 import { HiOutlineMail } from "react-icons/hi";
@@ -29,13 +29,18 @@ import { Link, useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useForm } from "../../../utils/useForm";
 import { handleLoginUser } from "../../../redux/appActions/authActions";
-import { getToken, getUser } from "../../../utils/useToken";
+import {
+  getToken,
+  //getRoleSessionStatus,
+  //getUser,
+} from "../../../utils/useToken";
 
 const SignInForm = () => {
   const history = useHistory();
   const [show, setShow] = useState(false);
   const dispatch = useDispatch();
-  
+
+  //handling form submission
   const {
     handleSubmit,
     handleChange,
@@ -56,29 +61,45 @@ const SignInForm = () => {
         },
       },
     },
-    onSubmit: () => {
+
+    onSubmit: async () => {
       const data = {
         username: user.username,
         email: user.email,
         password: user.password,
       };
 
-      dispatch(handleLoginUser(data));
-      localStorage.setItem("newUserEmail", JSON.stringify(user.email));
       try {
+        await dispatch(handleLoginUser(data));
         const token = getToken();
-        if (token) {
-          toast.success("Login successful", { position: "bottom-left" });
-          const userInfo = getUser();
-          const { session_status, account_id } = userInfo;
-          const seller_id = account_id;
 
-          history.push(
-            session_status === "seller" ? `/sellers/${seller_id}/profile` : "/"
-          );
+        if (token) {
+          toast.success("Login successful", {
+            position: "top-left",
+          });
+
+          //const sessionStatus = getRoleSessionStatus();
+          //const sellerId = getUser()?.account_id;
+
+          history.push("/");
+        } else {
+          toast.error("Login failed. Please try again.", {
+            position: "top-left",
+          });
         }
       } catch (error) {
-        toast.error("Login Failed.", { position: "bottom-left" });
+        if (error.response?.status === 401) {
+          toast.error(
+            "Invalid credentials. Please check your email and password.",
+            {
+              position: "top-left",
+            }
+          );
+        } else {
+          toast.error("Login failed. Please try again later.", {
+            position: "top-left",
+          });
+        }
       }
     },
   });
@@ -199,7 +220,10 @@ const SignInForm = () => {
       <Text align="center" mt={4} fontSize={{ base: "sm", md: "xs" }}>
         Don't have an account?
         <Link to="/signup">
-          <Box as="span" textColor="#007ACC"> Sign up </Box>
+          <Box as="span" textColor="#007ACC">
+            {" "}
+            Sign up{" "}
+          </Box>
         </Link>
       </Text>
     </Flex>

@@ -9,7 +9,7 @@ import {
 const initialState = {
     buyerOrders: [],
     sellerOrders: [],
-    orderDetails: {},
+    orderDetails: [],
     cancelledOrders: [],
 };
 
