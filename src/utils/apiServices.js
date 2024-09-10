@@ -1,48 +1,45 @@
-import axios from "axios";
+import axios from "axios"
 import { getToken } from "./useToken";
 
-const baseURL = 'http://localhost:8000'; // base URL for all endpoints
+const baseURL = 'https://jenga-bay-backend1.onrender.com';// base url for all endpoints
 
 const apiConfig = {
     baseURL,
-    timeout: 30000, // Adjusted to a reasonable timeout
+    timeout: 30000000,
     headers: {
       'Content-Type': 'application/json',
+      // "Access-Control-Allow-Origin": '*',
+      // "Access-Control-Expose-Headers": "Content-Length, X-JSON",
+      // "Access-Control-Allow-Methods": 'HEAD, GET, POST, PUT, PATCH, DELETE',
+      // "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+
     },
     validateStatus: function (status) {
       return status < 500; // Resolve only if the status code is less than 500
     },
-};
-
+  };
+  
 const api = axios.create({ ...apiConfig });
+//getting user token from local storage
+// const userToken = localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token")) : " ";
+// console.log("userToken", userToken)
+// token authentification
+const token = getToken(); 
+// if(token) api.defaults.headers.common['Authorization'] = `Token ${token}`
 
-// Token authentication using axios interceptors
-api.interceptors.request.use(
-  (config) => {
-    const token = getToken(); 
-    if (token) {
-      config.headers.Authorization = `Token ${token}`;
-    }
-    return config;
-  },
-  (err) => Promise.reject(err)
-);
-
-// Handle response errors globally
-api.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response && error.response.status === 401) {
-      console.error("Invalid token. Please log in again.", error.response);
-    }
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.request.use(
+//   (config) => {
+//      // Whatever the token is
+//     if (token) config.headers.Authorization = `Token ${token}` ;
+//     return config;
+//   },
+//   (err) => Promise.reject("Error from auth token",err)
+// );
 
 class APIServices {
-  /*----------------------------------USERS-------------------------------------- */ 
+/*----------------------------------USERS-------------------------------------- */ 
 
-  // Logging in a user
+  // Loging in a user
   async loginUser(data) {
     return api.post(`/login`, data);
   }
@@ -52,210 +49,237 @@ class APIServices {
     return api.post(`/accounts/logout/`);
   }
 
-  // Password reset request
+  // @desc End Point Example
   async passwordReset(data) {
     return api.post(`/accounts/password_reset/`, data);
   }
 
-  // Password reset confirmation
+  // @desc End Point Example
   async passwordResetConfirm(data) {
     return api.post(`/accounts/password_reset/confirm/`, data);
   }
 
-  /*----------------------------------CLIENTS-------------------------------------- */  
+/*----------------------------------CLIENTS-------------------------------------- */  
 
-  // Creating a client
+  // creating a client
   async createClient(data) {
     return api.post(`/create_buyer`, data);
   }
 
-  // Getting a client's profile
+  // getting a clients profile
   async getClientProfile(buyer_id) {
     return api.get(`/buyers/${buyer_id}/profile`);
   }
 
-  // Updating a client's profile
+  // updating a clients profile
   async updateClientProfile(buyer_id, data) {
     return api.put(`/buyers/${buyer_id}/profile`, data);
   }
 
-  // Deleting a client's profile
+  // getting a clients profile
   async deleteClientProfile(buyer_id) {
     return api.delete(`/buyers/${buyer_id}/profile`);
   }
 
-  // Getting a client's details
+  // getting a client's details
   async getClientDetails(buyer_id) {
     return api.get(`/buyers/${buyer_id}`);
   }
 
-  /*----------------------------------PRODUCTS-------------------------------------- */
+/*----------------------------------PRODUCTS-------------------------------------- */
 
-  // Getting all products
-  async getProducts() {
+  //getting all products
+  async getProducts(){
     return api.get(`/items`);
   }
 
-  // Getting details of a specific product
-  async getProductDetails(item_id) {
+  //getting details of a specific product
+  async getProductDetails(item_id){
     return api.get(`/items/${item_id}`);
   }
 
-  // Getting items in a specific category
-  async getItemsInSpecificCategory(category_name) {
-    return api.get(`/items?category=${category_name}`);
+  //getting items in a specific category
+  async getItemsInSpecificCategory(category_name){
+    return api.get(`/items?category=${category_name}`)
   }
 
-  // Searching items that meet specific criteria
-  async searchItems(query_string) {
-    return api.get(`/items?search=${query_string}`);
+  //searching items that meet specific criteria
+  async searchItems(query_string){
+    return api.get(`/items?search=${query_string}`)
   }
 
-  /*----------------------------------SELLERS-------------------------------------- */
+/*----------------------------------SELLERS-------------------------------------- */
 
-  // Getting all sellers
-  async getAllSellers() {
-    return api.get(`/sellers/`);
-  }
-
-  // Creating a seller in the database
-  async createSeller(data) {
-    return api.post(`/create_seller_account`, data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Token ${getToken()}`, 
+  //getting all sellers
+  async getAllSellers()
+      {
+        return api.get(`/sellers/`);
       }
-    });
+
+  //Creating a seller in th db
+  async createSeller(data){
+    return api.post(`/create_seller_account`, data);
   }
 
-  // Getting details of a specific seller
-  async getSellerDetails(seller_id) {
+  //getting details of a specific seller
+  async getSellerDetails(seller_id){
     return api.get(`/sellers/${seller_id}`);
   }
 
-  // Getting profile of a specific seller
-  async getSellerProfile(seller_id) {
-    return api.get(`/sellers/${seller_id}/profile`, {
-      headers: {
-        Authorization: `Token ${getToken()}`,
+  //getting profile of a specific seller
+  async getSellerProfile(seller_id){
+    return api.get(`/sellers/${seller_id}/profile`,
+     {
+        headers: {
+          Authorization: `Token ${token}`,
+        }
+      }, 
+      {
+        withCredentials: true
       }
-    });
+    );
   }
 
-  // Updating profile of a specific seller with patch
-  async updateSellerProfile(seller_id, data) {
-    return api.patch(`/sellers/${seller_id}/profile`, data, {
+  //updating profile of a specific seller with patch
+  async updateSellerProfile(seller_id, data){
+    return api.patch(`/sellers/${seller_id}/profile`, data,
+    {
       headers: {
-        Authorization: `Token ${getToken()}`,
+        Authorization: `Token ${token}`,
       }
-    });
+    }, 
+    {
+      withCredentials: true
+    }
+    );
+  }
+  //updating profile of a specific seller with patch
+  async updateSellerProfilePic(seller_id, data){
+    return api.put(`/sellers/${seller_id}/profile`, data,
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        }
+      }, 
+      {
+        withCredentials: true
+      }
+    );
   }
 
-  // Updating profile picture of a specific seller
-  async updateSellerProfilePic(seller_id, data) {
-    return api.put(`/sellers/${seller_id}/profile`, data, {
-      headers: {
-        Authorization: `Token ${getToken()}`,
-      }
-    });
-  }
-
-  // Deleting profile of a specific seller
-  async deleteSellerProfile(seller_id) {
+  //deleting profile of a specific seller
+  async deleteSellerProfile(seller_id){
     return api.delete(`/sellers/${seller_id}/profile`);
   }
+/*--------------------------------SELLER ITEMS----------------------------------- */
 
-  /*--------------------------------SELLER ITEMS----------------------------------- */
-
-  // Getting all items belonging to a specific seller
-  async getSellerItems(seller_id) {
-    return api.get(`/sellers/${seller_id}/items`);
+  //Getting all items belonging to a specific seller
+  async getSellerItems(seller_id){
+    return api.get(`/sellers/${seller_id}/items`)
   }
 
-  // Getting a specific item belonging to a specific seller
-  async getSellerItem(seller_id, item_id) {
-    return api.get(`/sellers/${seller_id}/items/${item_id}`);
+  //Getting a specific item belonging to a specific seller
+  async getSellerItem(seller_id, item_id){
+    return api.get(`/sellers/${seller_id}/items/${item_id}`)
   }
 
-  // Getting items belonging to a specific category from a specific seller
-  async getSellerItemsInSpecificCategory(seller_id, category_name) {
-    return api.get(`/sellers/${seller_id}/items?category=${category_name}`);
+  //Getting items belonging to a specific category from a specific seller
+  async getSellerItemsInSpecificCategory(seller_id, category_name){
+    return api.get(`/sellers/${seller_id}/items?category=${category_name}`)
   }
 
-  // Searching for items belonging to a specific seller
-  async searchingSellerItems(seller_id, query_string) {
-    return api.get(`/sellers/${seller_id}/items?search=${query_string}`);
+  //Searching for anything belonging to a specific seller
+  async searchingSellerItems(seller_id, query_string){
+    return api.get(`/sellers/${seller_id}/items?search=${query_string}`)
   }
 
-  // Adding an item by a specific seller
-  async addItem(seller_id, data) {
-    return api.post(`/sellers/${seller_id}/items/add_item`, data, {
+  //Adding an item by a specific seller
+  async addItem(seller_id, data){
+    return api.post(`/sellers/${seller_id}/items/add_item`, data,
+    {
       headers: {
-        Authorization: `Token ${getToken()}`,
+        Authorization: `Token ${token}`,
       }
-    });
+    }, 
+    {
+      withCredentials: true
+    })
   }
 
-  // Updating details of a specific item belonging to a specific seller
-  async updateSellerItem(seller_id, item_id, data) {
-    return api.put(`/sellers/${seller_id}/items/${item_id}`, data);
+  //Updating details of a specific item belonging to a specific seller
+  async updateSellerItem(seller_id, item_id, data){
+    return api.put(`/sellers/${seller_id}/items/${item_id}`, data)
   }
 
-  // Deleting a specific item belonging to a specific seller
-  async deleteSellerItem(seller_id, item_id) {
-    return api.delete(`/sellers/${seller_id}/items/${item_id}`);
+  //Deleting a specific item belonging to a specific seller
+  async deleteSellerItem(seller_id, item_id){
+    return api.delete(`/sellers/${seller_id}/items/${item_id}`)
   }
 
   /*-----------------------------------ORDERS---------------------------------------- */
 
-  // Creating an order
+  //Creating an order
   async createOrder(data) {
-    return api.post(`/submit_order`, data);
+    return api.post(`/submit_order`, data)
   }
 
-  // Viewing orders for a specific seller
+  //Viewing orders to a specific seller
   async getSellersOrders(seller_id) {
-    return api.get(`/sellers/${seller_id}/orders`, {
+    return api.get(`/sellers/${seller_id}/orders`,
+    {
       headers: {
-        Authorization: `Token ${getToken()}`,
+        Authorization: `Token ${token}`,
       }
-    });
+    }, 
+    {
+      withCredentials: true
+    })
   }
 
-  // Viewing a specific order for a seller
+  //Viewing orders to a specific seller
   async viewOrderClient(seller_id, order_id) {
-    return api.get(`/sellers/${seller_id}/orders/${order_id}`, {
+    return api.get(`/sellers/${seller_id}/orders/${order_id}`,
+    {
       headers: {
-        Authorization: `Token ${getToken()}`,
+        Authorization: `Token ${token}`,
       }
-    });
+    }, 
+    {
+      withCredentials: true
+    })
   }
 
-  // Getting all orders made by a specific buyer
-  async getAllBuyerOrders(buyer_id) {
-    return api.get(`buyers/${buyer_id}/orders`, {
+  //Getting all orders made by a specific buyer
+  async getAllBuyerOrders(buyer_id){
+    return api.get(`buyers/${buyer_id}/orders`,
+    {
       headers: {
-        Authorization: `Token ${getToken()}`,
+        Authorization: `Token ${token}`,
       }
-    });
+    }, 
+    {
+      withCredentials: true
+    })
   }
 
-  // Viewing, updating, or deleting a specific order
+  //seller can view, update or delete a specific order
   async viewOrder(seller_id, order_id) {
-    return api.get(`/sellers/${seller_id}/orders/${order_id}/edit`);
+    return api.get(`/sellers/${seller_id}/orders/${order_id}/edit`)
   }
 
-  // Updating a specific order
+  //seller can view, update or delete a specific order
   async editOrder(seller_id, order_id, data) {
-    return api.put(`/sellers/${seller_id}/orders/${order_id}/edit`, data);
+    return api.put(`/sellers/${seller_id}/orders/${order_id}/edit`, data)
   }
 
-  // Deleting a specific order
+  //seller can view, update or delete a specific order
   async deleteOrder(seller_id, order_id) {
-    return api.delete(`/sellers/${seller_id}/orders/${order_id}/edit`);
+    return api.delete(`/sellers/${seller_id}/orders/${order_id}/edit`)
   }
 }
 
-const instance = new APIServices(); 
+
+
+const instance = new APIServices();//an instance of axios that can be used globally
 
 export default instance;

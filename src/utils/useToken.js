@@ -1,5 +1,6 @@
 export const getToken = () => {
   const userToken = JSON.parse(localStorage.getItem('userInfo'));
+  console.log('Token:', userToken?.token); // Add this line
   return userToken?.token || null;
 };
 

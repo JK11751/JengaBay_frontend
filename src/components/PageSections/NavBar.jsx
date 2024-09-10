@@ -40,7 +40,7 @@ import { getUser } from "../../utils/useToken";
 const NavBar = () => {
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();
-  const sellerId = getUser()?.account_id;
+  const sellerId = getUser()?.user_id;
   const history = useHistory();
   const [show, setShow] = React.useState(false);
   const handleToggle = (setting) => setShow(setting);
