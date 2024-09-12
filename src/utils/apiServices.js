@@ -1,7 +1,7 @@
 import axios from "axios"
 import { getToken } from "./useToken";
 
-const baseURL = 'https://jenga-bay-backend1.onrender.com'
+const baseURL = 'https://jenga-bay-backend1.onrender.com';// base url for all endpoints
 
 const apiConfig = {
     baseURL,

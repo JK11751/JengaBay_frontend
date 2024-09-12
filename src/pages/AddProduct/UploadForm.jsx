@@ -37,17 +37,19 @@ const UploadForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(data);
+
     let form_data = new FormData();
-    form_data.append("item_name", itemName);
-    form_data.append("item_description", description);
-    form_data.append("item_price", pricePerUnit);
-    form_data.append("item_measurement_unit", unit);
-    form_data.append("item_main_image", mainImage, mainImage?.name);
-    form_data.append("item_extra_image1", image1, image1?.name);
-    form_data.append("item_extra_image2", image2, image2?.name);
-    form_data.append("item_extra_image3", image3, image3?.name);
-    form_data.append("item_extra_image4", image4, image4?.name);
-    form_data.append("category", category);
+form_data.append("item_name", itemName);
+form_data.append("item_description", description);
+form_data.append("item_price", pricePerUnit);
+form_data.append("item_measurement_unit", unit);
+if (mainImage) form_data.append("item_main_image", mainImage, mainImage.name);
+if (image1) form_data.append("item_extra_image1", image1, image1.name);
+if (image2) form_data.append("item_extra_image2", image2, image2.name);
+if (image3) form_data.append("item_extra_image3", image3, image3.name);
+if (image4) form_data.append("item_extra_image4", image4, image4.name);
+form_data.append("category", category);
+
 
     dispatch(handleAddProductSeller(SellerId, form_data));
     history.push("/");

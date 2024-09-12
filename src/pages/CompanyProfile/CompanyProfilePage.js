@@ -47,6 +47,7 @@ const CompanyProfilePage = () => {
   const role = getRoleSessionStatus();
   const confirmProfile = JSON.parse(getUser().account_id);
   const { sellerId } = useParams();
+  console.log(sellerId);
   const dispatch = useDispatch();
   const history = useHistory();
   const [clicked, setClicked] = useState(false);

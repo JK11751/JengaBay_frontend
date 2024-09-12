@@ -5,40 +5,5 @@ export const Companies = [
         name:"Bamburi Cement",
         imageUrl: {image},
     },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
-    {
-        name:"Bamburi Cement",
-        imageUrl: {image},
-    },
+    
 ]

@@ -50,9 +50,18 @@ const RegistrationForm = () => {
     local_area_name: localAreaName,
     street: street,
     building: building,
-    business_reg_doc: regdoc?.name,
-    profile_pic: profile_pic?.name,
   };
+  
+  // Append files to FormData
+  const formData = new FormData();
+  formData.append("business_reg_doc", regdoc);
+  formData.append("profile_pic", profile_pic);
+  
+  // You might need to send the rest as a JSON string:
+  formData.append("data", JSON.stringify(data));
+  
+  dispatch(handleRegisterSeller(formData));
+  
 
   const onSubmit = (e) => {
     e.preventDefault();

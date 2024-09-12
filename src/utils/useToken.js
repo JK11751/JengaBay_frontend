@@ -1,11 +1,11 @@
 export const getToken = () => {
   const userToken = JSON.parse(localStorage.getItem('userInfo'));
-  console.log('Token:', userToken?.token); // Add this line
   return userToken?.token || null;
 };
 
 export const setToken = (userInfo) => {
   localStorage.setItem('userInfo', JSON.stringify(userInfo));
+  console.log('Setting User Info:', userInfo); // Check what data is being set
 };
 
 export const getUser = () => {
