@@ -24,6 +24,7 @@ import { CompanyOrders } from "../pages/CompanyOrders/CompanyOrders.js";
 import { ClientOrders } from "../pages/ClientOrders/ClientOrders.js";
 import { OrderDetails } from "../pages/OrderDetails/OrderDetails.js";
 import NotFound from "../pages/ErrorPage/NotFound.js";
+import RegisterAsASeller from "../pages/Home/subs/RegisterAsASeller.jsx";
 
 const Routes = () => {
   //globally setting cart items in localStorage for data persistence
@@ -50,6 +51,9 @@ const Routes = () => {
         </Route>
         <Route exact path="/signup">
           <SignUp />
+        </Route>
+        <Route exact path="/about">
+          <RegisterAsASeller />
         </Route>
         <Route exact path="/login">
           <Login />

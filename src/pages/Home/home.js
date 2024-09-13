@@ -31,17 +31,6 @@ const Home = () => {
 
     localStorage.setItem("Allproducts", JSON.stringify(productReducer));
     return(
-        <>
-        {isLoading ? 
-        <Center>
-            <Spinner thickness="4px"
-                mt="45vh"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="blue.500"
-                size="xl"/>
-        </Center>
-        :
         <Box alignItems="center" bgColor="#fff" flexDir="column" width="full" height="100vh">
             <NavBar />
             <Center mt={5}>
@@ -100,7 +89,7 @@ const Home = () => {
                     <Box mt={5} mb={5} textAlign="center" w="90vw" bg="#E9F6FF" p={4} as="span" fontSize="lg" textTransform="uppercase">POPULAR CATEGORIES</Box>
                 </Center> */}
                 <Center>
-                    <RegisterAsASeller/>
+                   
                 </Center>
             </Box> 
             <Box my={10}>
@@ -129,8 +118,8 @@ const Home = () => {
             <Box >
                 <Footer/>
             </Box>   
-        </Box>}
-        </>
+        </Box>
+    
     )
 }
 export default Home;

@@ -1,6 +1,5 @@
 import React from "react";
 import CartIcon from "../Products/cartIcon";
-import { FiMenu, FiHelpCircle } from "react-icons/fi";
 import icon from "../../assets/JengaBay.png";
 import { Image } from "@chakra-ui/image";
 import { IoIosArrowDown } from "react-icons/io";
@@ -10,16 +9,13 @@ import { Icon } from "@chakra-ui/icon";
 import SideBar from "./SideBar";
 import {
   chakra,
-  Box,
+
   Flex,
   useColorModeValue,
   VisuallyHidden,
   HStack,
   Button,
-  VStack,
-  IconButton,
-  CloseButton,
-  Center,
+
 } from "@chakra-ui/react";
 import {
   Menu,
@@ -29,7 +25,6 @@ import {
   MenuGroup,
   MenuDivider,
 } from "@chakra-ui/react";
-import { AiOutlineMenu } from "react-icons/ai";
 import { useHistory } from "react-router";
 import SearchBar from "../SearchBar/SearchBar";
 import { useSelector } from "react-redux";
@@ -38,8 +33,6 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import { getUser } from "../../utils/useToken";
 
 const NavBar = () => {
-  const bg = useColorModeValue("white", "gray.800");
-  const mobileNav = useDisclosure();
   const sellerId = getUser()?.account_id;
   const history = useHistory();
   const [show, setShow] = React.useState(false);
@@ -64,87 +57,91 @@ const NavBar = () => {
         zIndex="200"
         position="sticky"
       >
-        <Flex alignItems="center" justifyContent="space-between">
-          <HStack display="flex" spacing={3} alignItems="center">
-            <Box display={{ base: "inline-flex", md: "none" }}>
-              <IconButton
-                display={{ base: "flex", md: "none" }}
-                aria-label="Open menu"
-                fontSize="20px"
-                color={useColorModeValue("gray.800", "inherit")}
-                variant="ghost"
-                icon={<AiOutlineMenu />}
-                onClick={mobileNav.onOpen}
-              />
-              <VStack
-                pos="absolute"
-                top={0}
-                left={0}
-                right={0}
-                display={mobileNav.isOpen ? "flex" : "none"}
-                flexDirection="column"
-                p={2}
-                pb={4}
-                m={2}
-                bg={bg}
-                spacing={3}
-                rounded="sm"
-                shadow="sm"
-              >
-                <CloseButton
-                  aria-label="Close menu"
-                  justifySelf="self-start"
-                  onClick={mobileNav.onClose}
-                />
-              </VStack>
-            </Box>
-
-            <Icon
-              onClick={() => handleToggle(true)}
-              color="#fff"
-              _hover={{ cursor: "pointer" }}
-              as={FiMenu}
-              h={10}
-              w={7}
-            />
-            <VisuallyHidden>Menu</VisuallyHidden>
-
-            <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
-              <Flex w="full" alignSelf="center" flexShrink={0}>
-                <Link to="/">
-                  <Image src={icon} />
-                </Link>
-              </Flex>
-            </HStack>
-          </HStack>
-          <Center>
+        <Flex alignItems="center" justifyContent="space-between" wrap="wrap">
+          {/* Mobile view */}
+          <HStack spacing={3} alignItems="center" display={{ base: "flex", md: "none" }}>
+            <Link to="/">
+              <Image src={icon} />
+            </Link>
             <SearchBar />
-          </Center>
-          <HStack
-            spacing={3}
-            display={mobileNav.isOpen ? "none" : "flex"}
-            alignItems="center"
-            pr={4}
-          >
-            <chakra.a
-              pl={3}
-              color={useColorModeValue("gray.800", "inherit")}
-              rounded="sm"
-              _hover={{ color: useColorModeValue("gray.800", "gray.600") }}
-            >
-              <Icon color="#fff" h={6} w={6} as={FiHelpCircle} />
-              <VisuallyHidden>Shopping Cart</VisuallyHidden>
-            </chakra.a>
+            <CartIcon handleOpenCart={handleOpenCart} number={cart.cartItems.length} display={{ base: "flex", md: "none" }} />
+            <Menu isLazy>
+              <MenuButton p={0} bg="transparent">
+                <Icon color="#fff" h={7} w={7} as={MdOutlineAccountCircle} />
+                <Icon color="#fff" h={5} w={4} as={IoIosArrowDown} />
+              </MenuButton>
+              <MenuList>
+                {user && (
+                  <>
+                    <MenuGroup fontWeight="bold" title="Profile">
+                      <MenuItem onClick={() => history.push({ pathname: `/sellers/${sellerId}/profile` })}>
+                        My Account
+                      </MenuItem>
+                    </MenuGroup>
+                    <MenuDivider />
+                  </>
+                )}
+                <MenuGroup title="Help">
+                  <MenuItem>Docs</MenuItem>
+                  <MenuItem onClick={() => history.push({ pathname: `/about` })}>About</MenuItem>
+                  <MenuItem>FAQ</MenuItem>
+                </MenuGroup>
+                {!user ? (
+                  <>
+                    <MenuItem>
+                      <Button
+                        h="30px"
+                        fontWeight="500"
+                        fontSize="13px"
+                        w="130px"
+                        textColor="#18A0FB"
+                        background="#fff"
+                        variant="outline"
+                        onClick={() => history.push({ pathname: "/signup" })}
+                      >
+                        Sign Up
+                      </Button>
+                    </MenuItem>
+                    <MenuItem>
+                      <Button
+                        h="30px"
+                        w="130px"
+                        fontWeight="500"
+                        fontSize="13px"
+                        textColor="#000"
+                        colorScheme="#18A0FB"
+                        background="#18A0FB"
+                        variant="solid"
+                        onClick={() => history.push({ pathname: "/login" })}
+                      >
+                        Login
+                      </Button>
+                    </MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuDivider />
+                    <MenuItem onClick={() => onOpen()}>LOG OUT</MenuItem>
+                  </>
+                )}
+              </MenuList>
+            </Menu>
+          </HStack>
+
+          {/* Desktop view */}
+          <HStack display={{ base: "none", md: "flex" }} spacing={3} alignItems="center" justifyContent="space-between" pr={4}>
+            <Link to="/">
+              <Image src={icon} />
+            </Link>
+            <SearchBar />
             <chakra.a
               p={3}
               color={useColorModeValue("gray.800", "inherit")}
               rounded="sm"
               _hover={{ color: useColorModeValue("gray.800", "gray.600") }}
+              onClick={handleOpenCart}
             >
-              <CartIcon
-                handleOpenCart={() => handleOpenCart()}
-                number={cart.cartItems.length}
-              />
+              <CartIcon number={cart.cartItems.length} />
               <VisuallyHidden>Shopping Cart</VisuallyHidden>
             </chakra.a>
             <Menu isLazy>
@@ -153,57 +150,48 @@ const NavBar = () => {
                 <Icon color="#fff" h={5} w={4} as={IoIosArrowDown} />
               </MenuButton>
               <MenuList>
-                <MenuGroup fontWeight="bold" title="Profile">
-                  <MenuItem
-                    onClick={() =>
-                      history.push({ pathname: `/sellers/${sellerId}/profile` })
-                    }
-                  >
-                    My Account
-                  </MenuItem>
-                </MenuGroup>
-                <MenuDivider />
+                {user && (
+                  <>
+                    <MenuGroup fontWeight="bold" title="Profile">
+                      <MenuItem onClick={() => history.push({ pathname: `/sellers/${sellerId}/profile` })}>
+                        My Account
+                      </MenuItem>
+                    </MenuGroup>
+                    <MenuDivider />
+                  </>
+                )}
                 <MenuGroup title="Help">
                   <MenuItem>Docs</MenuItem>
+                  <MenuItem onClick={() => history.push({ pathname: `/about` })}>About</MenuItem>
                   <MenuItem>FAQ</MenuItem>
                 </MenuGroup>
                 {!user ? (
                   <>
-                    <MenuItem alignItems="center">
+                    <MenuItem>
                       <Button
                         h="30px"
-                        alignItems="center"
                         fontWeight="500"
                         fontSize="13px"
                         w="130px"
                         textColor="#18A0FB"
                         background="#fff"
                         variant="outline"
-                        onClick={() =>
-                          history.push({
-                            pathname: "/signup",
-                          })
-                        }
+                        onClick={() => history.push({ pathname: "/signup" })}
                       >
                         Sign Up
                       </Button>
                     </MenuItem>
-                    <MenuItem alignItems="center">
+                    <MenuItem>
                       <Button
                         h="30px"
                         w="130px"
-                        alignItems="center"
                         fontWeight="500"
                         fontSize="13px"
                         textColor="#000"
                         colorScheme="#18A0FB"
                         background="#18A0FB"
                         variant="solid"
-                        onClick={() =>
-                          history.push({
-                            pathname: "/login",
-                          })
-                        }
+                        onClick={() => history.push({ pathname: "/login" })}
                       >
                         Login
                       </Button>

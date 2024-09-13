@@ -8,6 +8,7 @@ const RegisterAsASeller = () => {
   
   return (
     <Box
+      mt={{ base: 4, md: 8 }}
       mx={{ base: 4, md: 8 }}
       display={{ base: "block", lg: "flex" }}
       w="full"
