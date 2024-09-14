@@ -22,6 +22,8 @@ const authReducer = (state = initialState, action) => {
             return{
                 ...state,
                 loggedOutUser: payload,
+                userInfo: null,          
+                token: null,
             }     
         case PASSWORD_RESET:
             return{

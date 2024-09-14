@@ -1,7 +1,7 @@
 import APIServices from "../../utils/apiServices";
 import { toast } from "react-toastify";
 import { PASSWORD_RESET, PASSWORD_RESET_CONFIRM, LOGIN_USER, LOGOUT_USER } from "../App/actionTypes";
-import { setToken } from "../../utils/useToken";
+import { setToken, removeUserSession } from "../../utils/useToken";
 // Registering a buyer to the system
 // Logging in a user to the system
 export const handleLoginUser = (userData) => async (dispatch) => {
@@ -43,6 +43,7 @@ export const handleLogoutUser = () => async (dispatch) => {
     });
     localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
+    removeUserSession();
     // Result is sent to the store via dispatch (Pass payload if needed)
   } catch (error) {
     // Handle exceptions here
