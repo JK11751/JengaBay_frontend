@@ -4,13 +4,13 @@ import { Box, Flex, Center, Spacer, Text, Icon, HStack, Spinner,SimpleGrid } fro
 import {ChevronRightIcon} from "@chakra-ui/icons"
 import NavBar from "../../components/PageSections/NavBar";
 import ProductCard from "../../components/Products/ProductCard";
-//import CategoryList from "../../data/CategoryList";
+import CategoryList from "../../data/CategoryList";
 import CategoryChips from "../../components/Categories/CategoryChips"
 import Footer from "../../components/PageSections/Footer";
 import AdsCarousel from "./subs/AdsCarousel";
 import { handleGetProducts } from "../../redux/appActions/productActions";
 import { useDispatch, useSelector } from "react-redux";
-//import CategoryCard from "./subs/CategoryCard";
+import CategoryCard from "./subs/CategoryCard";
 import { Companies } from "../../data/Companies";
 import image from "../../assets/bamburi.jpg"
 import CompanyCard from "./subs/CompanyCard";
@@ -39,7 +39,7 @@ const Home = () => {
             <Center>
                 <CategoryChips />
             </Center>
-            {/*
+            
             <Box mb={10}>
                 <Center>
                     <Box mt={5} mb={5} textAlign="center" w="90vw" bg="#E9F6FF" p={4} as="span" fontSize="lg" textTransform="uppercase">POPULAR CATEGORIES</Box>
@@ -62,7 +62,6 @@ const Home = () => {
                 </Center>
                 
             </Box> 
-            */}
             <Center> 
                 <Flex shadow="lg" height="auto" bg="#fff" borderRadius="10px" width="90vw" flexWrap="wrap" >
                     <Flex p={2} bg="#E9F6FF" borderTopRadius="10px"  width="inherit" color="#000" flexDir="column">
@@ -100,7 +99,7 @@ const Home = () => {
                 <Flex px="3" borderRadius="10px" width="90vw" alignSelf="center" flexWrap="wrap">
                         {Companies.map((company, index) => {
                             return(
-                            <CompanyCard key={index} seller_id={1} company_name={company.name} image={image}/>
+                            <CompanyCard key={index} company_name={company.name} image={image}/>
                         )})}
                     </Flex>
                 </Center>  
