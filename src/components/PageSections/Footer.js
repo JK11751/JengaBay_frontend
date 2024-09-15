@@ -95,7 +95,7 @@ import { Link } from 'react-router-dom';
             <Image src={logo}/></Link>
           </Flex>
           <Text color="white" pt={6} fontSize={'sm'} textAlign={'center'}>
-            © 2021 JengaBay. All rights reserved
+            © 2024 JengaBay. All rights reserved
           </Text>
         </Box>
       </Box>

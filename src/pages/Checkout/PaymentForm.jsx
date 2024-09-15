@@ -1,59 +1,94 @@
-import { VStack, HStack } from "@chakra-ui/react";
-import React from "react";
-import { Box, Link } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
-import { Divider, Text } from "@chakra-ui/layout";
-import { FormControl, FormLabel } from "@chakra-ui/form-control";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
+import { useState } from 'react';
+import {
+  VStack, HStack, Stack, Box, Link, Button, Divider, Text, FormControl,
+  FormLabel, Input, InputGroup, InputLeftElement, Modal, ModalOverlay, ModalContent,
+  ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useToast
+} from "@chakra-ui/react";
 import { BiLockAlt } from "react-icons/bi";
 import { FaCalendar, FaRegWindowMaximize } from "react-icons/fa";
-import {
-  Visa,
-  Discover,
-  Western,
-  Mastercard,
-  Amex,
-  Worldpay,
-} from "react-pay-icons";
+import { Visa, Discover, Western, Mastercard, Amex, Worldpay } from "react-pay-icons";
 import { BsArrowRightShort } from "react-icons/bs";
 import { Icon } from "@chakra-ui/icon";
+import APIServices from "../../utils/apiServices";
 
 const PaymentForm = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [amount, setAmount] = useState('');
+  const toast = useToast();
+
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+
+  const handleSubmit = async () => {
+    try {
+      const data = {
+        phone_number: phoneNumber,
+        amount: parseInt(amount, 10),
+      };
+
+      // Call the mpesa function from apiServices
+      const response = await APIServices.mpesa(data);
+      console.log(response.data);
+      
+      toast({
+        title: "Payment Initiated",
+        description: "Your payment has been initiated.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      
+      handleClose();
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Payment Failed",
+        description: error.response?.data?.error || "There was an error initiating the payment.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
   return (
-    <Box>
-      <VStack mt="5px">
-        <HStack>
-          <Text color="black">Credited Payment Methods</Text>
+    <Box p={{ base: "10px", md: "20px" }}>
+      <VStack mt="5px" spacing={4}>
+        <HStack justify="center">
+          <Text color="black" fontSize={{ base: "lg", md: "xl" }}>
+            Credited Payment Methods
+          </Text>
         </HStack>
         <Divider />
-        <VStack mb="100px">
+        <VStack spacing={4} mb="100px">
           <Button
             borderColor="#007AC"
             borderWidth="1px"
-            width="200px"
+            width={{ base: "150px", md: "200px" }}
             borderStyle="solid"
             mb="5px"
+            onClick={handleOpen} // Open modal on button click
           >
             Mpesa
           </Button>
-          <HStack mb="30px">
+          <HStack justify="center" mb="30px">
             <img
               height="40"
               alt="paypal"
               src="https://shoplineimg.com/assets/footer/card_paypal.png"
             />
           </HStack>
-          <Text>Pay by Card</Text>
-          <HStack>
-            <Visa style={{ margin: 10, width: 100 }} />;
-            <Discover style={{ margin: 10, width: 100 }} />;
-            <Western style={{ margin: 10, width: 100 }} />;
-            <Mastercard style={{ margin: 10, width: 100 }} />;
-            <Amex style={{ margin: 10, width: 100 }} />;
-            <Worldpay style={{ margin: 10, width: 100 }} />;
+          <Text fontSize={{ base: "md", md: "lg" }}>Pay by Card</Text>
+          <HStack spacing={4} justify="center" flexWrap="wrap">
+            <Visa style={{ margin: 10, width: 80 }} />
+            <Discover style={{ margin: 10, width: 80 }} />
+            <Western style={{ margin: 10, width: 80 }} />
+            <Mastercard style={{ margin: 10, width: 80 }} />
+            <Amex style={{ margin: 10, width: 80 }} />
+            <Worldpay style={{ margin: 10, width: 80 }} />
           </HStack>
         </VStack>
-        <Box alignSelf="center">
+        <Box alignSelf="center" w="100%">
           <FormControl id="card-no" isRequired>
             <FormLabel>Card Number</FormLabel>
             <InputGroup>
@@ -63,14 +98,19 @@ const PaymentForm = () => {
               />
               <Input
                 variant="filled"
-                width="400px"
+                width="100%"
                 placeholder="0000 0000 0000 0000"
                 type="text"
               />
             </InputGroup>
           </FormControl>
         </Box>
-        <HStack>
+        <Stack
+          direction={{ base: "column", md: "row" }}
+          spacing={4}
+          w="100%"
+          align="center"
+        >
           <FormControl id="expirydate" isRequired>
             <FormLabel>Expiry Date</FormLabel>
             <InputGroup>
@@ -81,7 +121,6 @@ const PaymentForm = () => {
               <Input
                 type="text"
                 variant="filled"
-                width="200px"
                 placeholder="mm/dd/yy"
               />
             </InputGroup>
@@ -96,22 +135,21 @@ const PaymentForm = () => {
               />
               <Input
                 variant="filled"
-                width="200px"
                 placeholder="..."
                 type="text"
               />
             </InputGroup>
           </FormControl>
-        </HStack>
-        <HStack>
+        </Stack>
+        <HStack justify="center" mt={2}>
           <BiLockAlt color="gray.300" />
-          <Text>Your transaction is secured with SSL encryption</Text>
+          <Text fontSize={{ base: "sm", md: "md" }}>
+            Your transaction is secured with SSL encryption
+          </Text>
         </HStack>
-        <HStack>
+        <HStack justify="center" spacing={4}>
           <Button
-            
             type="submit"
-            alignSelf="center"
             padding="10px"
             background="#007ACC"
             borderRadius="25px"
@@ -121,10 +159,47 @@ const PaymentForm = () => {
           >
             Pay Now
           </Button>
-          <Link  color="#007ACC"> Continue Shopping </Link>
+          <Link color="#007ACC" fontSize={{ base: "sm", md: "md" }}>
+            Continue Shopping
+          </Link>
           <Icon as={BsArrowRightShort} />
         </HStack>
       </VStack>
+
+      {/* Mpesa Modal */}
+      <Modal isOpen={isOpen} onClose={handleClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Mpesa Payment</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl id="phone-number" isRequired>
+              <FormLabel>Phone Number</FormLabel>
+              <Input
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="Enter phone number"
+                type="tel"
+              />
+            </FormControl>
+            <FormControl id="amount" isRequired mt={4}>
+              <FormLabel>Amount</FormLabel>
+              <Input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Enter amount"
+                type="number"
+                min="0"
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" onClick={handleSubmit}>
+              Send
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

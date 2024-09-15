@@ -1,8 +1,8 @@
 import axios from "axios"
 import { getToken } from "./useToken";
 
-const baseURL = "http://127.0.0.1:8000"
-//'https://jenga-bay-backend1.onrender.com';// base url for all endpoints
+const baseURL = 'https://02e6-41-80-115-21.ngrok-free.app'
+
 
 const apiConfig = {
     baseURL,
@@ -45,6 +45,10 @@ class APIServices {
     return api.post(`/login`, data);
   }
 
+
+  async mpesa(data) {
+    return api.post(`/mpesa/`, data);
+  }
   // Logging out a user
   async logoutUser() {
     return api.post(`/accounts/logout/`);
