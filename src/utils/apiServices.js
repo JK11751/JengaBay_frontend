@@ -1,7 +1,7 @@
 import axios from "axios"
 import { getToken } from "./useToken";
 
-const baseURL = 'https://02e6-41-80-115-21.ngrok-free.app'
+const baseURL = 'http://127.0.0.1:8000'
 
 
 const apiConfig = {
@@ -45,10 +45,18 @@ class APIServices {
     return api.post(`/login`, data);
   }
 
-
   async mpesa(data) {
-    return api.post(`/mpesa/`, data);
+    return api.post(`/mpesa/payment/`, data, {
+      headers: {
+        'Authorization': `Token ${token}`
+      }
+      
+    },
+    {
+    withCredentials: true
+  });
   }
+  
   // Logging out a user
   async logoutUser() {
     return api.post(`/accounts/logout/`);

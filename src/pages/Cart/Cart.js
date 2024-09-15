@@ -4,6 +4,7 @@ import NavBar from '../../components/PageSections/NavBar';
 import { Icon } from '@chakra-ui/icon';
 import { BsArrowDown } from 'react-icons/bs';
 import { IoIosArrowBack } from 'react-icons/io';
+import { useToast } from '@chakra-ui/react'
 import { Input } from '@chakra-ui/input';
 import { Button } from '@chakra-ui/button';
 import { useHistory } from 'react-router';
@@ -11,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useColorModeValue } from '@chakra-ui/color-mode';
 import { handleRemoveFromCart, handleClearCart, handleUpdateQuantity } from '../../redux/appActions/cartActions';
 import CartItem from './CartItem';
+import { getUser } from '../../utils/useToken';
+
 
 const style = {
     color: "#C4C4C4",
@@ -26,12 +29,43 @@ const otherStyles = {
 
 export const Cart = () => {
     const dispatch = useDispatch();
+    const toast = useToast()
     const cart = useSelector(({ cartReducer }) => cartReducer);
     const history = useHistory();
     const TotalPrice = cart.cartItems.reduce((price, item) => price + item.quantity * item.item_price, 0);
     
+    const handleCheckout = () => {
+        const user = getUser();
+        
+        if (cart.cartItems.length === 0) {
+            toast({
+                title: 'Cart is empty.',
+                description: 'Please add items to your cart before proceeding to checkout.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: 'top',
+            });
+            return;
+        }
+
+        if (!user) {
+            toast({
+                title: 'Login First.',
+                description: 'Please log in to proceed to checkout.',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: 'top',
+            });
+            return;
+        }
+
+        history.push("/checkout");
+    };
+    
     return (
-        <Box maxH="100vh" p={{ base: 4, md: 10 }}>
+        <Box maxH="100vh" p={{ base: 4, md: 0 }}>
             <NavBar />
             <Flex direction={{ base: "column", lg: "row" }} height="auto" spacing={4}>
                 <Box 
@@ -86,6 +120,7 @@ export const Cart = () => {
                             <Button mt={3} onClick={() => dispatch(handleClearCart())} size="md" fontWeight="normal" fontFamily="sans-serif" color="white" bg="#555" borderRadius="50px" width="100%" maxWidth="300px">
                                 Clear Cart
                             </Button>
+                            
                         </Box>
                     )}
                 </Box>
@@ -114,7 +149,7 @@ export const Cart = () => {
                                 <Text {...otherStyles}>ESTIMATED DELIVERY FEE: KSH.0</Text>
                                 <Text {...otherStyles}>DISCOUNT</Text>
                                 <Text {...otherStyles}>TOTAL CART AMOUNT: {TotalPrice}</Text>
-                                <Button onClick={() => history.push("/checkout")} size="md" fontWeight="normal" fontFamily="sans-serif" color="white" bg="#555" borderRadius="50px" width="full">
+                                <Button onClick={handleCheckout}  size="md" fontWeight="normal" fontFamily="sans-serif" color="white" bg="#555" borderRadius="50px" width="full">
                                     CHECKOUT NOW
                                 </Button>
                             </VStack>
@@ -129,6 +164,7 @@ export const Cart = () => {
                     </VStack>
                 </Box>
             </Flex>
+            
         </Box>
     );
 };

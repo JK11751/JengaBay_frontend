@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   VStack, HStack, Stack, Box, Link, Button, Divider, Text, FormControl,
   FormLabel, Input, InputGroup, InputLeftElement, Modal, ModalOverlay, ModalContent,
   ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useToast
 } from "@chakra-ui/react";
 import { BiLockAlt } from "react-icons/bi";
+import { useSelector } from 'react-redux';
 import { FaCalendar, FaRegWindowMaximize } from "react-icons/fa";
 import { Visa, Discover, Western, Mastercard, Amex, Worldpay } from "react-pay-icons";
 import { BsArrowRightShort } from "react-icons/bs";
@@ -14,8 +15,17 @@ import APIServices from "../../utils/apiServices";
 const PaymentForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(0);
   const toast = useToast();
+
+  const TotalPrice = useSelector(({ cartReducer }) => 
+    cartReducer.cartItems.reduce((price, item) => price + item.quantity * item.item_price, 0)
+  );
+
+  useEffect(() => {
+    // Set the amount field with the total price from the cart
+    setAmount(TotalPrice);
+  }, [TotalPrice]);
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
@@ -25,6 +35,7 @@ const PaymentForm = () => {
       const data = {
         phone_number: phoneNumber,
         amount: parseInt(amount, 10),
+        seller_id: 1,
       };
 
       // Call the mpesa function from apiServices
@@ -159,7 +170,7 @@ const PaymentForm = () => {
           >
             Pay Now
           </Button>
-          <Link color="#007ACC" fontSize={{ base: "sm", md: "md" }}>
+          <Link href='/' color="#007ACC" fontSize={{ base: "sm", md: "md" }}>
             Continue Shopping
           </Link>
           <Icon as={BsArrowRightShort} />
@@ -178,7 +189,7 @@ const PaymentForm = () => {
               <Input
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Enter phone number"
+                placeholder="Enter phone number beginning with 254"
                 type="tel"
               />
             </FormControl>
@@ -190,6 +201,7 @@ const PaymentForm = () => {
                 placeholder="Enter amount"
                 type="number"
                 min="0"
+                isReadOnly 
               />
             </FormControl>
           </ModalBody>

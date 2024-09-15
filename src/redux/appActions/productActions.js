@@ -31,6 +31,7 @@ const getProductDetails = (productDetails) => ({
 export const handleGetProductDetails = (item_id) => async(dispatch) => {
   try {
     const { data } = await APIServices.getProductDetails(item_id);
+  
     await dispatch(getProductDetails(data));
   } catch (error) {
     console.log(`Error from handleGetProductDetails: ${error}`);
