@@ -17,10 +17,10 @@ const productReducer = (state = initialState, action) => {
     // The GET USERS case is handled here
     switch (type) {
         case GET_PRODUCTS:
-            return{
-                ...state,
-                products:payload
-            }     
+      return {
+        ...state,
+        products: Array.isArray(action.payload) ? action.payload : [] // Ensure payload is an array
+      }   
         case GET_PRODUCT_DETAILS:
             return{
                 ...state,

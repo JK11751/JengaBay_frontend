@@ -1,7 +1,7 @@
 import axios from "axios"
 import { getToken } from "./useToken";
 
-const baseURL = 'http://127.0.0.1:8000'
+const baseURL = 'https://cf5d-41-80-113-187.ngrok-free.app'
 
 
 const apiConfig = {
@@ -231,10 +231,16 @@ class APIServices {
 
   /*-----------------------------------ORDERS---------------------------------------- */
 
-  //Creating an order
   async createOrder(data) {
-    return api.post(`/submit_order`, data)
+    return api.post(`/submit_order`, data, {
+      headers: {
+        'Authorization': `Token ${token}`,
+      },
+      withCredentials: true
+    });
   }
+  
+  
 
   //Viewing orders to a specific seller
   async getSellersOrders(seller_id) {
@@ -287,7 +293,15 @@ class APIServices {
 
   //seller can view, update or delete a specific order
   async deleteOrder(seller_id, order_id) {
-    return api.delete(`/sellers/${seller_id}/orders/${order_id}/edit`)
+    return api.delete(`/sellers/${seller_id}/orders/${order_id}/edit`,
+      {
+      headers: {
+        Authorization: `Token ${token}`,
+      }
+    }, 
+    {
+      withCredentials: true
+    })
   }
 }
 
