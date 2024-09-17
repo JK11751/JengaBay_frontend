@@ -3,7 +3,9 @@ import {
     GET_ORDER_DETAILS, 
     GET_SPECIFIC_BUYER_ORDERS, 
     GET_SPECIFIC_SELLER_ORDERS, 
-    UNDO_CANCEL_ORDER 
+    UNDO_CANCEL_ORDER,
+    DELETE_ORDER,
+    EDIT_ORDER,
 } from "../App/actionTypes";
 
 const initialState = {
@@ -40,6 +42,18 @@ const orderReducer = (state = initialState, action) => {
                 ...state,
                 cancelledOrders: state.cancelledOrders.filter(order => order.id !== action.payload.id),
             };
+            case EDIT_ORDER:
+                return {
+                    ...state,
+                    orders: state.orders.map((order) =>
+                        order.id === action.payload.id ? action.payload : order
+                    ),
+                };
+            case DELETE_ORDER:
+                return {
+                    ...state,
+                    orders: state.orders.filter((order) => order.id !== action.payload),
+                };
         default:
             return state;
     }

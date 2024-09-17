@@ -4,8 +4,11 @@ import {
     GET_ORDER_DETAILS, 
     GET_SPECIFIC_BUYER_ORDERS, 
     GET_SPECIFIC_SELLER_ORDERS, 
-    UNDO_CANCEL_ORDER 
+    UNDO_CANCEL_ORDER,
+    DELETE_ORDER,
 } from "../App/actionTypes";
+
+
 
 const getSellerOrders = (sellerOrders) => ({
     type: GET_SPECIFIC_SELLER_ORDERS,
@@ -44,6 +47,7 @@ export const handleGetOrderDetails = (seller_id, order_id) => async (dispatch) =
     try {
         const { data } = await APIServices.viewOrderClient(seller_id, order_id);
         dispatch(getOrderDetails(data));
+        console.log(data);
     } catch (error) {
         console.log(`Error from handleGetOrderDetails: ${error}`);
     }
@@ -58,3 +62,16 @@ export const handleRemoveFromCancelled = (order) => ({
     type: UNDO_CANCEL_ORDER,
     payload: order,
 });
+const deleteOrderAction = (order_id) => ({
+    type: DELETE_ORDER,
+    payload: order_id,
+});
+
+export const handleDeleteOrder = (seller_id, order_id) => async (dispatch) => {
+    try {
+        await APIServices.deleteOrder(seller_id, order_id);
+        dispatch(deleteOrderAction(order_id));
+    } catch (error) {
+        console.log(`Error from handleDeleteOrder: ${error}`);
+    }
+};

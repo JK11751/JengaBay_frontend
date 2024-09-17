@@ -9,21 +9,24 @@ import { useSelector } from 'react-redux';
 import { FaCalendar, FaRegWindowMaximize } from "react-icons/fa";
 import { Visa, Discover, Western, Mastercard, Amex, Worldpay } from "react-pay-icons";
 import { BsArrowRightShort } from "react-icons/bs";
+import { useDispatch } from 'react-redux';
 import { Icon } from "@chakra-ui/icon";
 import APIServices from "../../utils/apiServices";
+import { CLEAR_CART } from '../../redux/App/actionTypes';
 
 const PaymentForm = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [amount, setAmount] = useState(0);
   const toast = useToast();
+  const dispatch = useDispatch();
 
+  const cartItems = useSelector(({ cartReducer }) => cartReducer.cartItems);
   const TotalPrice = useSelector(({ cartReducer }) => 
     cartReducer.cartItems.reduce((price, item) => price + item.quantity * item.item_price, 0)
   );
 
   useEffect(() => {
-    // Set the amount field with the total price from the cart
     setAmount(TotalPrice);
   }, [TotalPrice]);
 
@@ -35,20 +38,45 @@ const PaymentForm = () => {
       const data = {
         phone_number: phoneNumber,
         amount: parseInt(amount, 10),
-        seller_id: 1,
+        seller_id: 1,  
       };
-
+  
       // Call the mpesa function from apiServices
       const response = await APIServices.mpesa(data);
-      console.log(response.data);
       
-      toast({
-        title: "Payment Initiated",
-        description: "Your payment has been initiated.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
+      if (response.data && response.data.ResponseCode === '0') {  // Assuming '0' is success code
+        toast({
+          title: "Payment Initiated",
+          description: "Your payment has been initiated.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        // Create order after successful payment initiation
+        const orderData = {
+          user_id: 16,  // Replace with actual user ID
+          cart_items: cartItems,  // Use actual cart items
+          total_amount: parseInt(amount, 10),
+        };
+
+        const orderResponse = await APIServices.createOrder(orderData);
+        console.log('Order created:', orderResponse.data);
+  
+        toast({
+          title: "Order Created",
+          description: "Your order has been created successfully.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        // Clear cart after successful order creation
+        dispatch({ type: CLEAR_CART });
+        
+      } else {
+        throw new Error("Payment initiation failed");
+      }
       
       handleClose();
     } catch (error) {
@@ -62,6 +90,8 @@ const PaymentForm = () => {
       });
     }
   };
+  
+  
   return (
     <Box p={{ base: "10px", md: "20px" }}>
       <VStack mt="5px" spacing={4}>
