@@ -1,7 +1,7 @@
 import axios from "axios"
 import { getToken } from "./useToken";
 
-const baseURL = 'https://cf5d-41-80-113-187.ngrok-free.app'
+const baseURL = 'https://jenga-bay-backend1.onrender.com'
 
 
 const apiConfig = {
